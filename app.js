@@ -6,6 +6,7 @@ lessons.forEach(item => item.querySelector('button').addEventListener('click', (
     lesson.querySelector('button').setAttribute('aria-expanded', String(open));
     lesson.querySelector('.tutorial-content').inert = !open;
   });
+  syncTutorialVideo();
 }));
 const carousel = document.querySelector('.carousel');
 const track = carousel.querySelector('.carousel-track');
@@ -148,3 +149,48 @@ mainMenu.addEventListener('click',event=>{if(event.target.closest('a'))closeMenu
 document.addEventListener('keydown',event=>{if(event.key==='Escape')closeMenu();});
 window.addEventListener('resize',()=>{closeMenu();alignHero();});
 document.addEventListener('click',event=>{if(matchMedia('(max-width: 1100px)').matches&&event.target.closest('[data-download]'))event.preventDefault();},true);
+
+// Tutorial players only load when opened, and pause outside the section.
+const tutorialSection=document.querySelector('.tutorial');
+let tutorialVisible=false;
+let activeTutorialVideo=null;
+function syncTutorialVideo(){
+  const video=document.querySelector('.tutorial-item.is-open .tutorial-video');
+  if(activeTutorialVideo&&(activeTutorialVideo!==video||!tutorialVisible||document.hidden)){
+    activeTutorialVideo.pause();activeTutorialVideo=null;
+  }
+  if(!video||!tutorialVisible||document.hidden||activeTutorialVideo===video)return;
+  if(!video.getAttribute('src'))video.src=video.dataset.src;
+  activeTutorialVideo=video;
+  video.play().catch(()=>{ /* Native controls remain available if autoplay is blocked. */ });
+}
+const tutorialObserver=new IntersectionObserver(entries=>{
+  tutorialVisible=entries[0].isIntersecting;syncTutorialVideo();
+},{threshold:.15});
+tutorialObserver.observe(tutorialSection);
+document.addEventListener('visibilitychange',syncTutorialVideo);
+
+document.querySelectorAll('.tutorial-player').forEach(player=>{
+  const video=player.querySelector('video');
+  const button=player.querySelector('.tutorial-play');
+  const seek=player.querySelector('.tutorial-seek');
+  const update=()=>{
+    button.textContent=video.paused?'▶':'Ⅱ';
+    button.setAttribute('aria-label',video.paused?'Play tutorial':'Pause tutorial');
+  };
+  button.addEventListener('click',()=>{
+    if(video.paused)video.play().catch(()=>{});else video.pause();
+  });
+  video.addEventListener('play',update);
+  video.addEventListener('pause',update);
+  video.addEventListener('ended',update);
+  video.addEventListener('timeupdate',()=>{
+    if(Number.isFinite(video.duration)&&video.duration>0){
+      seek.value=String(Math.round(video.currentTime/video.duration*1000));
+      seek.setAttribute('aria-valuetext',Math.round(video.currentTime)+' seconds of '+Math.round(video.duration));
+    }
+  });
+  seek.addEventListener('input',()=>{
+    if(Number.isFinite(video.duration))video.currentTime=Number(seek.value)/1000*video.duration;
+  });
+});
