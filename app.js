@@ -25,7 +25,6 @@ function render(){
   track.style.transform=`translate3d(${-loop-position-originals[0].offsetWidth/2}px,0,0)`;
   const active=originals.length+Math.round(position/step);
   cards.forEach((card,i)=>card.classList.toggle('is-active',i===active));
-  window.syncCarouselVideo?.(cards[active],!dragging&&Math.abs(target-position)<.5);
 }
 function animate(){
   frame=0;
