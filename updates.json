@@ -1,4 +1,13 @@
 {
   "schemaVersion": 1,
-  "platforms": {}
+  "platforms": {
+    "macos-arm64": {
+      "version": "1.19.0",
+      "build": 132,
+      "minimumSystemVersion": "13.0",
+      "downloadPage": "https://obo-onebyone.com/#download",
+      "downloadUrl": "https://github.com/ilchezzi/onebyone/releases/download/v1.19.0/ONE-BY-ONE-1.19.0-macos-arm64.dmg",
+      "sha256": "31c299707c5a51d0621e30bab9bbeaa075e303c169e99db662d8570e5eaea535"
+    }
+  }
 }
