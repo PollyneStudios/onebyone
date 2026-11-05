@@ -46,3 +46,18 @@ footer{margin-top:160px;border-top:1px solid var(--muted);height:394px}.footer-m
 .hero h2,.hero p{transform:translateX(-50%) translateX(var(--ink-shift,0px))}
 body{overflow-x:clip}
 .hero h1{font-size:136px}
+/* Desktop navigation and release/media integration */
+.header{position:fixed;top:0;left:50%;right:auto;transform:translateX(-50%);width:1440px;z-index:100;background:#0b0b0bf2;backdrop-filter:blur(14px);border-bottom:1px solid #ffffff0a}
+.header nav{left:50%;transform:translateX(-50%);gap:32px;white-space:nowrap}
+section,article[id]{scroll-margin-top:122px}
+.studio:hover,.studio:active,.studio:focus-visible{color:var(--yellow);opacity:1}
+.studio img{filter:grayscale(1) brightness(2)}
+.studio:hover img,.studio:active img,.studio:focus-visible img{filter:brightness(0) saturate(100%) invert(86%) sepia(69%) saturate(654%) hue-rotate(330deg) brightness(104%) contrast(101%);transform:rotate(45deg)}
+.benefits article:hover{background:var(--card);color:var(--text);transform:none}.benefits article:hover h3{font-weight:400}
+.tutorial-tab span{left:9px;top:28px;bottom:auto;transform:none;writing-mode:vertical-rl;text-orientation:mixed}
+.button[aria-disabled="true"]{cursor:wait;opacity:.65}
+.showcase-card{cursor:pointer}.showcase-card.is-active{cursor:default}
+.instagram-stage{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:var(--accent);color:inherit}
+.instagram-stage p{font-size:12px}.instagram-stage>a{font-size:14px;text-decoration:underline}.load-instagram{background:var(--bg);color:var(--text);border:0;border-radius:7px;padding:12px 20px;font:inherit;cursor:pointer}
+.instagram-stage iframe{width:100%;height:100%;border:0;background:var(--bg)}
+.showcase-card:not(.is-active) .instagram-stage{pointer-events:none}

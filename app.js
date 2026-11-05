@@ -13,7 +13,7 @@ const originals = [...track.children];
 for(let run=0;run<2;run++) originals.forEach(card=>track.append(card.cloneNode(true)));
 const cards=[...track.children];
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-let position=0,target=0,frame=0,dragging=false,lastX=0,snapTimer=0;
+let position=0,target=0,frame=0,dragging=false,lastX=0,snapTimer=0,dragDistance=0,pressedCard=null;
 const stride=()=>originals[0].offsetWidth+24;
 const cycle=()=>originals.length*stride();
 const modulo=(n,m)=>((n%m)+m)%m;
@@ -24,7 +24,16 @@ function render(){
   position-=shift;target-=shift;
   track.style.transform=`translate3d(${-loop-position-originals[0].offsetWidth/2}px,0,0)`;
   const active=originals.length+Math.round(position/step);
-  cards.forEach((card,i)=>card.classList.toggle('is-active',i===active));
+  cards.forEach((card,i)=>{
+    card.classList.toggle('is-active',i===active);
+    if(i!==active&&card.querySelector('iframe')){
+      const stage=card.querySelector('.instagram-stage');stage.replaceChildren();
+      const button=document.createElement('button');button.type='button';button.className='load-instagram';button.textContent='Carica Instagram';
+      const note=document.createElement('p');note.textContent='Il contenuto viene caricato da Meta.';
+      const link=document.createElement('a');link.href=`https://www.instagram.com/reel/${card.dataset.instagram}/`;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Apri il Reel ↗';
+      stage.append(button,note,link);
+    }
+  });
 }
 function animate(){
   frame=0;
@@ -55,15 +64,16 @@ carousel.addEventListener('keydown',event=>{
 });
 carousel.addEventListener('pointerdown',event=>{
   if(event.button!==0)return;
-  clearTimeout(snapTimer);dragging=true;lastX=event.clientX;target=position;
+  if(event.target.closest('button,a,iframe'))return;
+  clearTimeout(snapTimer);dragging=true;dragDistance=0;pressedCard=event.target.closest('.showcase-card');lastX=event.clientX;target=position;
   carousel.setPointerCapture(event.pointerId);carousel.classList.add('is-dragging');
 });
 carousel.addEventListener('pointermove',event=>{
   if(!dragging)return;
   const delta=lastX-event.clientX;lastX=event.clientX;
-  position+=delta;target=position;render();
+  dragDistance+=Math.abs(delta);position+=delta;target=position;render();
 });
-function endDrag(){if(!dragging)return;dragging=false;carousel.classList.remove('is-dragging');target=position;snapToCard();}
+function endDrag(){if(!dragging)return;dragging=false;carousel.classList.remove('is-dragging');target=dragDistance<6&&pressedCard?(cards.indexOf(pressedCard)-originals.length)*stride():position;pressedCard=null;snapToCard();}
 carousel.addEventListener('pointerup',endDrag);carousel.addEventListener('pointercancel',endDrag);
 window.addEventListener('resize',render);render();
 // Center the visible glyphs, including the title's negative letter spacing.
@@ -80,3 +90,22 @@ function alignHero(){
   });
 }
 document.fonts.ready.then(alignHero);
+
+// Side previews move to the centre; a drag must never count as a click.
+track.addEventListener('click',event=>{
+  const card=event.target.closest('.showcase-card');
+  if(!card||dragDistance>6||event.target.closest('a,button,iframe'))return;
+  const index=cards.indexOf(card);
+  target=(index-originals.length)*stride();
+  clearTimeout(snapTimer);if(!frame)frame=requestAnimationFrame(animate);
+});
+// Consent is per browsing session. Instagram does not expose a supported playback API.
+track.addEventListener('click',event=>{
+  const button=event.target.closest('.load-instagram');if(!button)return;
+  const card=button.closest('.showcase-card');const code=card.dataset.instagram;
+  const iframe=document.createElement('iframe');
+  iframe.title='Instagram Reel';iframe.allow='autoplay; encrypted-media; picture-in-picture';
+  iframe.referrerPolicy='strict-origin-when-cross-origin';
+  iframe.src=`https://www.instagram.com/reel/${code}/embed/`;
+  card.querySelector('.instagram-stage').replaceChildren(iframe);
+});
