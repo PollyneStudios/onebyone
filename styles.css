@@ -67,3 +67,13 @@ section,article[id]{scroll-margin-top:122px}
 .instagram-content iframe{min-width:0!important;width:100%!important;height:740px;background:#efefef}
 .instagram-stage>.instagram-status{position:absolute;bottom:34px;left:12px;right:12px;text-align:center;font-size:10px;margin:0}
 .instagram-stage>.instagram-fallback{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:13px;background:var(--bg);color:var(--text);padding:5px 14px;border-radius:5px;text-decoration:none}
+/* YouTube demonstration: native 16:9 player plus a separate source link. */
+.carousel{height:445px}.showcase-card{height:405px;aspect-ratio:auto}
+.youtube-stage{height:366.75px;width:652px;background:var(--accent)}
+.youtube-stage>iframe{display:block;width:652px;height:366.75px;border:0}
+.youtube-placeholder{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.youtube-placeholder>strong{font-size:68px;line-height:1;letter-spacing:-.04em}
+.youtube-placeholder>span{font-size:14px}.youtube-placeholder>p{font-size:11px}
+.enable-youtube{font:inherit;border:0;border-radius:7px;padding:12px 20px;background:var(--bg);color:var(--text);cursor:pointer}
+.youtube-source{height:38px;display:flex;align-items:center;justify-content:center;font-size:12px;background:var(--card);color:var(--text)}
+.showcase-card:not(.is-active) .youtube-stage{pointer-events:none}
