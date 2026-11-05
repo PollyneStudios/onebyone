@@ -12,7 +12,7 @@
 <div class="page" id="top">
   <header class="header">
     <a class="brand" href="#top" aria-label="ONE BY ONE home"><img src="assets/logo.svg" width="128" height="32" alt="ONE BY ONE"></a>
-    <nav aria-label="Main navigation"><a href="#how-it-works">How OBO works</a><a href="#made-with-obo">Made with OBO</a><a href="#support">Support us</a><a href="#tutorial">Tutorial</a><a href="#download">Download</a></nav>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-menu">Menu <span aria-hidden="true">☰</span></button><nav id="main-menu" aria-label="Main navigation"><a href="#how-it-works">How OBO works</a><a href="#made-with-obo">Made with OBO</a><a href="#support">Support us</a><a href="#tutorial">Tutorial</a><a href="#download">Download</a></nav>
     <a class="studio" href="https://www.instagram.com/pollyne.studios/" target="_blank" rel="noopener noreferrer">by Pollyne Studios<img src="assets/studio-color.svg" width="38" height="38" alt=""></a>
   </header>
   <main>
@@ -20,7 +20,7 @@
       <h1 id="hero-title">One By One</h1>
       <h2>Mixed-media animation, made easy.</h2>
       <p>You create. OBO takes care of the rest.</p>
-      <div class="hero-actions"><a class="button" data-download="mac" aria-disabled="true"><img src="assets/apple.svg" alt="">Download for macOS</a><a class="button" data-download="windows" aria-disabled="true"><img src="assets/windows.svg" alt="">Download for Windows</a></div>
+      <p class="mobile-desktop-note">Made for desktop. Available for macOS and Windows.</p><div class="hero-actions"><a class="button" data-download="mac" aria-disabled="true"><img src="assets/apple.svg" alt="">Download for macOS</a><a class="button" data-download="windows" aria-disabled="true"><img src="assets/windows.svg" alt="">Download for Windows</a></div>
     </section>
     <div class="sections">
       <section class="how" id="how-it-works" aria-labelledby="how-title">
@@ -55,7 +55,7 @@
           <article><h3>Local &amp; Private</h3><p>All files stay on your device.</p></article>
         </div>
         <!-- Release details reproduce the Figma mockup; replace with verified release metadata before publishing. -->
-        <div class="download-cards">
+        <p class="mobile-download-note">ONE BY ONE runs on macOS and Windows.<br>Open this website on your computer to download the app.</p><div class="download-cards">
           <article class="download-card" id="download-mac"><p class="eyebrow">Desktop / Apple</p><h3>macOS</h3><p class="requirements">Apple Silicon (M1 or later) • macOS 13 or later</p><a class="button" data-download="mac" aria-disabled="true"><img src="assets/apple.svg" alt="">Download for macOS</a><p class="release" aria-live="polite">Checking latest release…</p></article>
           <article class="download-card" id="download-windows"><p class="eyebrow">Desktop / Windows</p><h3>Windows</h3><p class="requirements">64-bit (x64) • Windows 10 / Windows 11</p><a class="button" data-download="windows" aria-disabled="true"><img src="assets/windows.svg" alt="">Download for Windows</a><p class="release" aria-live="polite">Checking latest release…</p></article>
         </div>
