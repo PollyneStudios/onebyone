@@ -14,7 +14,7 @@ for(let run=0;run<2;run++) originals.forEach(card=>track.append(card.cloneNode(t
 const cards=[...track.children];
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let position=0,target=0,frame=0,dragging=false,lastX=0,snapTimer=0,dragDistance=0,pressedCard=null;
-const stride=()=>originals[0].offsetWidth+24;
+const stride=()=>originals[0].offsetWidth+parseFloat(getComputedStyle(track).gap);
 const cycle=()=>originals.length*stride();
 const modulo=(n,m)=>((n%m)+m)%m;
 function render(){
@@ -90,3 +90,12 @@ track.addEventListener('click',event=>{
   target=(index-originals.length)*stride();
   clearTimeout(snapTimer);if(!frame)frame=requestAnimationFrame(animate);
 });
+
+const menuToggle=document.querySelector('.menu-toggle');
+const mainMenu=document.querySelector('#main-menu');
+function closeMenu(){menuToggle.setAttribute('aria-expanded','false');mainMenu.classList.remove('is-open');}
+menuToggle.addEventListener('click',()=>{const open=menuToggle.getAttribute('aria-expanded')!=='true';menuToggle.setAttribute('aria-expanded',String(open));mainMenu.classList.toggle('is-open',open);});
+mainMenu.addEventListener('click',event=>{if(event.target.closest('a'))closeMenu();});
+document.addEventListener('keydown',event=>{if(event.key==='Escape')closeMenu();});
+window.addEventListener('resize',()=>{closeMenu();alignHero();});
+document.addEventListener('click',event=>{if(matchMedia('(max-width: 1100px)').matches&&event.target.closest('[data-download]'))event.preventDefault();},true);
