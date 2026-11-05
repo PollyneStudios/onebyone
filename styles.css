@@ -35,7 +35,7 @@ footer{margin-top:160px;border-top:1px solid var(--muted);height:394px}.footer-m
 .sections>.support>h2{font-size:48px;line-height:1.04;width:100%;max-width:1000px}
 .support-copy{max-width:590px;display:flex;flex-direction:column;align-items:center}.support-copy p{font-size:16px;line-height:1.4}.support-copy .button{margin-top:24px}
 .tutorial-item:hover,.tutorial-item:focus-within{background:var(--card);color:var(--text)}.tutorial-item:hover p{color:var(--muted)}
-.tutorial-tab:hover{background:#ffffff08}.tutorial-content>img{object-fit:cover}
+.tutorial-item:not(.is-open) .tutorial-tab:hover{background:#ffffff08}.tutorial-content>img{object-fit:cover}
 .carousel{overflow-anchor:none;touch-action:pan-y}
 /* Full-window continuous carousel; animation is independent of native scroll/snap. */
 .carousel{position:relative;width:100vw;margin-left:calc(664px - 50vw);height:412px;overflow:hidden;border-radius:0;scroll-snap-type:none;touch-action:pan-y}
