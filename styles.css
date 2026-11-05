@@ -110,4 +110,4 @@ footer{height:auto;margin-top:80px}.footer-main{height:auto;padding:40px 24px;di
 .video-play[hidden]{display:none}
 .showcase-card:not(.is-active) .video-play{display:none}
 
-.showcase-more{display:flex;justify-content:center;margin-top:8px}.showcase-more a{display:inline-flex;align-items:center;gap:10px;min-height:44px;font-size:16px;line-height:1.4;transition:color .2s}.showcase-more span{font-size:23px;line-height:1;transform:translateY(-2px);transition:transform .2s}.showcase-more a:hover{color:var(--yellow);opacity:1}.showcase-more a:hover span{transform:translate(2px,-4px)}
+.showcase-more{display:flex;justify-content:center;margin-top:8px}.showcase-more a{display:inline-flex;align-items:center;gap:10px;min-height:44px;font-size:16px;line-height:1.4;transition:color .2s}.showcase-more span{font-size:23px;line-height:1;transform:translate(-2px,-1px);transition:transform .2s}.showcase-more a:hover{color:var(--yellow);opacity:1}.showcase-more a:hover span{transform:translate(0,-3px)}
