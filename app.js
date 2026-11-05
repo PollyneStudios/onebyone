@@ -17,6 +17,41 @@ let position=0,target=0,frame=0,dragging=false,lastX=0,snapTimer=0,dragDistance=
 const stride=()=>originals[0].offsetWidth+parseFloat(getComputedStyle(track).gap);
 const cycle=()=>originals.length*stride();
 const modulo=(n,m)=>((n%m)+m)%m;
+// Keep one downloaded copy per project, shared by the carousel's repeated cards.
+const videoSources=originals.map(card=>card.querySelector('video').dataset.src);
+const warmedVideos=new Map();
+let warmQueue=[...videoSources],warming=false,backgroundWarm=false,lastWarmIndex=-1,warmingSource=null;
+function prioritizeVideos(index){
+  if(index===lastWarmIndex)return;
+  lastWarmIndex=index;
+  const order=[index,modulo(index+1,originals.length),modulo(index-1,originals.length)];
+  const preferred=order.map(i=>videoSources[i]);
+  warmQueue=[...new Set([...preferred,...warmQueue])].filter(src=>!warmedVideos.has(src)&&src!==warmingSource);
+  warmVideos();
+}
+async function warmVideos(){
+  if(warming||document.hidden)return;
+  const source=warmQueue.shift();
+  if(!source)return;
+  warming=true;warmingSource=source;
+  try{
+    const response=await fetch(source,{cache:'force-cache'});
+    if(!response.ok)throw new Error('Video unavailable');
+    const blob=await response.blob();
+    warmedVideos.set(source,URL.createObjectURL(blob));
+  }catch(error){
+    // Playback can still stream the original URL if preloading fails.
+  }finally{
+    warming=false;warmingSource=null;
+    if(backgroundWarm)setTimeout(warmVideos,250);
+  }
+}
+warmVideos();
+function startBackgroundWarm(){backgroundWarm=true;warmVideos();}
+if(document.readyState==='complete')startBackgroundWarm();
+else window.addEventListener('load',startBackgroundWarm,{once:true});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)warmVideos();});
+
 let carouselVisible=false;
 let playingVideo=null;
 function syncVideo(){
@@ -25,7 +60,7 @@ function syncVideo(){
   const ready=carouselVisible&&!document.hidden&&!dragging&&Math.abs(target-position)<1;
   if(playingVideo && (playingVideo!==video||!ready)){playingVideo.pause();playingVideo=null;}
   if(!ready||!video||playingVideo===video)return;
-  if(!video.getAttribute('src'))video.src=video.dataset.src;
+  if(!video.getAttribute('src'))video.src=warmedVideos.get(video.dataset.src)||video.dataset.src;
   video.muted=true;
   playingVideo=video;
   const button=card.querySelector('.video-play');
@@ -46,6 +81,7 @@ function render(){
   track.style.transform=`translate3d(${-loop-position-originals[0].offsetWidth/2}px,0,0)`;
   const active=originals.length+Math.round(position/step);
   cards.forEach((card,i)=>card.classList.toggle('is-active',i===active));
+  prioritizeVideos(modulo(active-originals.length,originals.length));
   syncVideo();
 }
 function animate(){
