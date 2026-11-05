@@ -99,3 +99,6 @@ footer{height:auto;margin-top:80px}.footer-main{height:auto;padding:40px 24px;di
 .sections{margin:0 20px;gap:76px}.sections>section>h2{font-size:34px}.steps{grid-template-columns:1fr;gap:12px}.step{min-height:0;padding:24px}.step p{margin-top:20px}.step:hover{transform:none}.carousel{margin-left:-20px}.project-word{left:20px;top:20px;font-size:clamp(32px,8vw,48px)}.project-credit{left:20px;bottom:18px;font-size:13px}.project-number{top:16px;right:16px;font-size:13px}
 .support{padding:32px 22px}.sections>.support>h2{font-size:30px;line-height:1.12}.support-copy p{font-size:15px}.tutorial-tab,.tutorial-item.is-open .tutorial-tab{padding:18px 20px;min-height:60px}.tutorial-tab span{font-size:20px}.tutorial-content{padding:0 16px 20px}.benefits{grid-template-columns:1fr;gap:12px}.benefits article{min-height:100px}.footer-main{grid-template-columns:1fr 1fr;padding:32px 20px;gap:32px 20px}.footer-brand{grid-column:1/-1;font-size:30px}.footer-bottom{padding:20px;justify-content:flex-start}.footer-bottom>p:first-child{width:100%}.footer-bottom>a{margin-left:auto}
 }
+
+@media(max-width:1100px){.menu-toggle{min-width:44px;min-height:44px;top:16px}.header nav a{min-height:48px}}
+@media(max-width:600px){.menu-toggle{top:12px}}
