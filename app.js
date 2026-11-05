@@ -17,6 +17,27 @@ let position=0,target=0,frame=0,dragging=false,lastX=0,snapTimer=0,dragDistance=
 const stride=()=>originals[0].offsetWidth+parseFloat(getComputedStyle(track).gap);
 const cycle=()=>originals.length*stride();
 const modulo=(n,m)=>((n%m)+m)%m;
+let carouselVisible=false;
+let playingVideo=null;
+function syncVideo(){
+  const card=cards.find(card=>card.classList.contains('is-active'));
+  const video=card?.querySelector('video');
+  const ready=carouselVisible&&!document.hidden&&!dragging&&Math.abs(target-position)<1;
+  if(playingVideo && (playingVideo!==video||!ready)){playingVideo.pause();playingVideo=null;}
+  if(!ready||!video||playingVideo===video)return;
+  if(!video.getAttribute('src'))video.src=video.dataset.src;
+  video.muted=true;
+  playingVideo=video;
+  const button=card.querySelector('.video-play');
+  video.play().then(()=>{button.hidden=true;}).catch(()=>{if(playingVideo===video){playingVideo=null;button.hidden=false;}});
+}
+const visibilityObserver=new IntersectionObserver(entries=>{carouselVisible=entries[0].isIntersecting;syncVideo();},{threshold:.25});
+visibilityObserver.observe(carousel);
+document.addEventListener('visibilitychange',syncVideo);
+cards.forEach(card=>card.querySelector('.video-play')?.addEventListener('click',()=>{
+  const video=card.querySelector('video');video.muted=true;
+  video.play().then(()=>{playingVideo=video;card.querySelector('.video-play').hidden=true;}).catch(()=>{});
+}));
 function render(){
   const step=stride(),loop=cycle();
   // Normalize the animation coordinates, never the browser's native scroll position.
@@ -25,6 +46,7 @@ function render(){
   track.style.transform=`translate3d(${-loop-position-originals[0].offsetWidth/2}px,0,0)`;
   const active=originals.length+Math.round(position/step);
   cards.forEach((card,i)=>card.classList.toggle('is-active',i===active));
+  syncVideo();
 }
 function animate(){
   frame=0;
@@ -56,7 +78,7 @@ carousel.addEventListener('keydown',event=>{
 carousel.addEventListener('pointerdown',event=>{
   if(event.button!==0)return;
   if(event.target.closest('button,a,iframe'))return;
-  clearTimeout(snapTimer);dragging=true;dragDistance=0;pressedCard=event.target.closest('.showcase-card');lastX=event.clientX;target=position;
+  clearTimeout(snapTimer);dragging=true;syncVideo();dragDistance=0;pressedCard=event.target.closest('.showcase-card');lastX=event.clientX;target=position;
   carousel.setPointerCapture(event.pointerId);carousel.classList.add('is-dragging');
 });
 carousel.addEventListener('pointermove',event=>{
@@ -81,15 +103,6 @@ function alignHero(){
   });
 }
 document.fonts.ready.then(alignHero);
-
-// Side previews move to the centre; a drag must never count as a click.
-track.addEventListener('click',event=>{
-  const card=event.target.closest('.showcase-card');
-  if(!card||dragDistance>6||event.target.closest('a,button,iframe'))return;
-  const index=cards.indexOf(card);
-  target=(index-originals.length)*stride();
-  clearTimeout(snapTimer);if(!frame)frame=requestAnimationFrame(animate);
-});
 
 const menuToggle=document.querySelector('.menu-toggle');
 const mainMenu=document.querySelector('#main-menu');
