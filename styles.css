@@ -61,3 +61,9 @@ section,article[id]{scroll-margin-top:122px}
 .instagram-stage p{font-size:12px}.instagram-stage>a{font-size:14px;text-decoration:underline}.load-instagram{background:var(--bg);color:var(--text);border:0;border-radius:7px;padding:12px 20px;font:inherit;cursor:pointer}
 .instagram-stage iframe{width:100%;height:100%;border:0;background:var(--bg)}
 .showcase-card:not(.is-active) .instagram-stage{pointer-events:none}
+/* Official Instagram embed with a permanent, unobscured external fallback. */
+.instagram-content{position:absolute;inset:0 0 57px;background:#efefef;overflow:auto;overscroll-behavior:contain;cursor:auto}
+.instagram-content blockquote.instagram-media{margin:0 auto!important;width:100%!important;min-width:0!important;max-width:none!important}
+.instagram-content iframe{min-width:0!important;width:100%!important;height:740px;background:#efefef}
+.instagram-stage>.instagram-status{position:absolute;bottom:34px;left:12px;right:12px;text-align:center;font-size:10px;margin:0}
+.instagram-stage>.instagram-fallback{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:13px;background:var(--bg);color:var(--text);padding:5px 14px;border-radius:5px;text-decoration:none}

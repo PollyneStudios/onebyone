@@ -26,7 +26,7 @@ function render(){
   const active=originals.length+Math.round(position/step);
   cards.forEach((card,i)=>{
     card.classList.toggle('is-active',i===active);
-    if(i!==active&&card.querySelector('iframe')){
+    if(i!==active&&card.querySelector('.instagram-content')){
       const stage=card.querySelector('.instagram-stage');stage.replaceChildren();
       const button=document.createElement('button');button.type='button';button.className='load-instagram';button.textContent='Carica Instagram';
       const note=document.createElement('p');note.textContent='Il contenuto viene caricato da Meta.';
@@ -99,13 +99,35 @@ track.addEventListener('click',event=>{
   target=(index-originals.length)*stride();
   clearTimeout(snapTimer);if(!frame)frame=requestAnimationFrame(animate);
 });
-// Consent is per browsing session. Instagram does not expose a supported playback API.
-track.addEventListener('click',event=>{
+// Load Instagram's official embed renderer only after an explicit visitor action.
+let instagramLoader;
+function loadInstagramRenderer(){
+  if(window.instgrm?.Embeds)return Promise.resolve();
+  if(instagramLoader)return instagramLoader;
+  instagramLoader=new Promise((resolve,reject)=>{
+    const script=document.createElement('script');script.async=true;script.src='https://www.instagram.com/embed.js';
+    const timer=setTimeout(()=>reject(Error('Instagram loading timed out')),10000);
+    script.onload=()=>{clearTimeout(timer);window.instgrm?.Embeds?resolve():reject(Error('Instagram renderer unavailable'));};
+    script.onerror=()=>{clearTimeout(timer);reject(Error('Instagram is blocked or unreachable'));};
+    document.head.append(script);
+  }).catch(error=>{instagramLoader=null;throw error;});
+  return instagramLoader;
+}
+track.addEventListener('click',async event=>{
   const button=event.target.closest('.load-instagram');if(!button)return;
-  const card=button.closest('.showcase-card');const code=card.dataset.instagram;
-  const iframe=document.createElement('iframe');
-  iframe.title='Instagram Reel';iframe.allow='autoplay; encrypted-media; picture-in-picture';
-  iframe.referrerPolicy='strict-origin-when-cross-origin';
-  iframe.src=`https://www.instagram.com/reel/${code}/embed/`;
-  card.querySelector('.instagram-stage').replaceChildren(iframe);
+  const card=button.closest('.showcase-card'),stage=card.querySelector('.instagram-stage');
+  const url=`https://www.instagram.com/reel/${card.dataset.instagram}/`;
+  const mount=document.createElement('div');mount.className='instagram-content';
+  const quote=document.createElement('blockquote');quote.className='instagram-media';
+  quote.dataset.instgrmPermalink=url;quote.dataset.instgrmVersion='14';
+  const source=document.createElement('a');source.href=url;source.target='_blank';source.rel='noopener noreferrer';source.textContent='Guarda il Reel su Instagram';quote.append(source);mount.append(quote);
+  const fallback=document.createElement('a');fallback.className='instagram-fallback';fallback.href=url;fallback.target='_blank';fallback.rel='noopener noreferrer';fallback.textContent='Apri su Instagram ↗';
+  const status=document.createElement('p');status.className='instagram-status';status.setAttribute('role','status');status.textContent='Caricamento Instagram…';
+  stage.replaceChildren(mount,status,fallback);
+  try{
+    await loadInstagramRenderer();
+    if(!mount.isConnected)return;
+    window.instgrm.Embeds.process();
+    status.textContent='Se il video resta vuoto, aprilo su Instagram.';
+  }catch(error){if(mount.isConnected){mount.remove();status.textContent='Instagram non è disponibile in questo browser. Usa il link qui sotto.';}}
 });
