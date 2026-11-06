@@ -194,3 +194,43 @@ document.querySelectorAll('.tutorial-player').forEach(player=>{
     if(Number.isFinite(video.duration))video.currentTime=Number(seek.value)/1000*video.duration;
   });
 });
+
+const scanStack=document.querySelector('.scan-stack');
+if(scanStack){
+  const sheets=[...scanStack.querySelectorAll('.scan-pile img')];
+  const toggle=scanStack.querySelector('.scan-stack-toggle');
+  const count=scanStack.querySelector('.scan-stack-count');
+  let sheetIndex=0,stackTimer=0,stackVisible=false,stackLoaded=false;
+  let stackPaused=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  sheets.forEach((sheet,index)=>{
+    const offsets=[0,4,-4,7,-7];
+    sheet.style.setProperty('--paper-x',offsets[index%5]+'px');
+    sheet.style.setProperty('--paper-y',offsets[(index*2)%5]+'px');
+    sheet.style.zIndex=String(index);
+  });
+  function showSheet(){
+    sheets.forEach((sheet,index)=>sheet.classList.toggle('is-shown',index<=sheetIndex));
+    count.textContent=String(sheetIndex+1).padStart(2,'0')+' / '+sheets.length;
+  }
+  function syncStack(){
+    clearInterval(stackTimer);stackTimer=0;
+    const open=scanStack.closest('.tutorial-item').classList.contains('is-open');
+    if(open&&!stackLoaded){
+      stackLoaded=true;
+      sheets.forEach(sheet=>{sheet.src=sheet.dataset.src;});
+      showSheet();
+    }
+    toggle.textContent=stackPaused?'▶':'Ⅱ';
+    toggle.setAttribute('aria-label',stackPaused?'Play scan animation':'Pause scan animation');
+    if(!open||!stackVisible||document.hidden||stackPaused)return;
+    stackTimer=setInterval(()=>{
+      const next=(sheetIndex+1)%sheets.length;
+      if(!sheets[next].complete||!sheets[next].naturalWidth)return;
+      sheetIndex=next;showSheet();
+    },1000);
+  }
+  toggle.addEventListener('click',()=>{stackPaused=!stackPaused;syncStack();});
+  new IntersectionObserver(entries=>{stackVisible=entries[0].isIntersecting;syncStack();},{threshold:.15}).observe(scanStack);
+  new MutationObserver(syncStack).observe(scanStack.closest('.tutorial-item'),{attributes:true,attributeFilter:['class']});
+  document.addEventListener('visibilitychange',syncStack);
+}
