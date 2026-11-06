@@ -146,3 +146,5 @@ footer{height:auto;margin-top:80px}.footer-main{height:auto;padding:40px 24px;di
 .obo-faq-grid p{font-size:16px;line-height:1.6;color:var(--muted)}
 .obo-faq-grid a{color:var(--text);text-decoration:underline;text-underline-offset:3px}
 @media(max-width:1100px){.obo-faq-grid{grid-template-columns:1fr}}
+
+.support{background:var(--yellow)}
