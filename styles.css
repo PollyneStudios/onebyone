@@ -149,4 +149,4 @@ footer{height:auto;margin-top:80px}.footer-main{height:auto;padding:40px 24px;di
 
 .support{background:var(--yellow)}
 
-.footer-instagram{display:inline-flex;align-items:center;gap:10px}.footer-instagram span{font-size:23px;line-height:1;transform:translate(-4px,-1px);transition:transform .2s}.footer-instagram:hover{color:var(--yellow);opacity:1}.footer-instagram:hover span{transform:translate(-2px,-3px)}
+.footer-instagram{display:inline-flex;align-items:center;gap:10px}.footer-instagram span{display:inline-flex;line-height:0;transform:translate(-4px,0);transition:transform .2s}.footer-instagram svg{width:.9em;height:.9em;stroke:currentColor;stroke-width:1.4;fill:none}.footer-instagram:hover{color:var(--yellow);opacity:1}.footer-instagram:hover span{transform:translate(-2px,-2px)}
