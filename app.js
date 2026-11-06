@@ -18,56 +18,70 @@ let position=0,target=0,frame=0,dragging=false,lastX=0,snapTimer=0,dragDistance=
 const stride=()=>originals[0].offsetWidth+parseFloat(getComputedStyle(track).gap);
 const cycle=()=>originals.length*stride();
 const modulo=(n,m)=>((n%m)+m)%m;
-// Keep one downloaded copy per project, shared by the carousel's repeated cards.
-const videoSources=originals.map(card=>card.querySelector('video').dataset.src);
-const warmedVideos=new Map();
-let warmQueue=[...videoSources],warming=false,backgroundWarm=false,lastWarmIndex=-1,warmingSource=null;
+// Each project owns one player, so looping clones share its buffer.
+const projectVideos=new Map(originals.map(card=>{
+  const video=card.querySelector('video');return [video.dataset.src,video];
+}));
+const videoSources=[...projectVideos.keys()];
+let lastWarmIndex=-1;
+function prepareVideo(source){
+  const video=projectVideos.get(source);
+  if(!video.getAttribute('src')){video.preload='auto';video.src=source;}
+  return video;
+}
 function prioritizeVideos(index){
   if(index===lastWarmIndex)return;
   lastWarmIndex=index;
-  const order=[index,modulo(index+1,originals.length),modulo(index-1,originals.length)];
-  const preferred=order.map(i=>videoSources[i]);
-  warmQueue=[...new Set([...preferred,...warmQueue])].filter(src=>!warmedVideos.has(src)&&src!==warmingSource);
-  warmVideos();
-}
-async function warmVideos(){
-  if(warming||document.hidden)return;
-  const source=warmQueue.shift();
-  if(!source)return;
-  warming=true;warmingSource=source;
-  try{
-    const response=await fetch(source,{cache:'force-cache'});
-    if(!response.ok)throw new Error('Video unavailable');
-    const blob=await response.blob();
-    warmedVideos.set(source,URL.createObjectURL(blob));
-  }catch(error){
-    // Playback can still stream the original URL if preloading fails.
-  }finally{
-    warming=false;warmingSource=null;
-    if(backgroundWarm)setTimeout(warmVideos,250);
+  prepareVideo(videoSources[index]);
+  if(carouselVisible){
+    prepareVideo(videoSources[modulo(index+1,originals.length)]);
+    prepareVideo(videoSources[modulo(index-1,originals.length)]);
   }
 }
-warmVideos();
-function startBackgroundWarm(){backgroundWarm=true;warmVideos();}
-if(document.readyState==='complete')startBackgroundWarm();
-else window.addEventListener('load',startBackgroundWarm,{once:true});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)warmVideos();});
+function mountProjectVideo(card){
+  const slot=card.querySelector('video');
+  const video=projectVideos.get(slot.dataset.src);
+  if(slot!==video){
+    if(video.parentElement?.classList.contains('showcase-card')){
+      const poster=video.cloneNode(false);
+      poster.removeAttribute('src');poster.preload='none';
+      video.replaceWith(poster);
+    }
+    slot.replaceWith(video);
+  }
+  return prepareVideo(video.dataset.src);
+}
+function warmRemainingVideos(){
+  let index=0;
+  function next(){
+    if(document.hidden){setTimeout(next,1500);return;}
+    const source=videoSources[index++];if(!source)return;
+    const video=prepareVideo(source);
+    if(video.readyState>=3){setTimeout(next,500);return;}
+    let advanced=false;
+    const advance=()=>{if(advanced)return;advanced=true;video.removeEventListener('canplaythrough',advance);setTimeout(next,500);};
+    video.addEventListener('canplaythrough',advance,{once:true});setTimeout(advance,8000);
+  }
+  next();
+}
+if(document.readyState==='complete')warmRemainingVideos();
+else window.addEventListener('load',warmRemainingVideos,{once:true});
 
 let carouselVisible=false;
 let playingVideo=null;
 function syncVideo(){
   const card=cards.find(card=>card.classList.contains('is-active'));
-  const video=card?.querySelector('video');
+  const video=card?mountProjectVideo(card):null;
   const ready=carouselVisible&&!document.hidden&&!dragging&&Math.abs(target-position)<1;
   if(playingVideo && (playingVideo!==video||!ready)){playingVideo.pause();playingVideo=null;}
   if(!ready||!video||playingVideo===video)return;
-  if(!video.getAttribute('src'))video.src=warmedVideos.get(video.dataset.src)||video.dataset.src;
+  
   video.muted=true;
   playingVideo=video;
   const button=card.querySelector('.video-play');
   video.play().then(()=>{button.hidden=true;}).catch(()=>{if(playingVideo===video){playingVideo=null;button.hidden=false;}});
 }
-const visibilityObserver=new IntersectionObserver(entries=>{carouselVisible=entries[0].isIntersecting;syncVideo();},{threshold:.25});
+const visibilityObserver=new IntersectionObserver(entries=>{carouselVisible=entries[0].isIntersecting;if(carouselVisible){lastWarmIndex=-1;prioritizeVideos(modulo(Math.round(position/stride()),originals.length));}syncVideo();},{threshold:.25});
 visibilityObserver.observe(carousel);
 document.addEventListener('visibilitychange',syncVideo);
 cards.forEach(card=>card.querySelector('.video-play')?.addEventListener('click',()=>{
@@ -152,6 +166,18 @@ document.addEventListener('click',event=>{if(matchMedia('(max-width: 1100px)').m
 
 // Tutorial players only load when opened, and pause outside the section.
 const tutorialSection=document.querySelector('.tutorial');
+const tutorialVideos=[...document.querySelectorAll('.tutorial-video')];
+function prepareTutorial(video,preload='auto'){
+  if(!video)return;
+  video.preload=preload;
+  if(!video.getAttribute('src'))video.src=video.dataset.src;
+}
+new IntersectionObserver(entries=>{
+  if(!entries[0].isIntersecting)return;
+  const open=document.querySelector('.tutorial-item.is-open .tutorial-video')||tutorialVideos[0];
+  prepareTutorial(open);
+  prepareTutorial(tutorialVideos[tutorialVideos.indexOf(open)+1]);
+},{rootMargin:'600px 0px'}).observe(tutorialSection);
 let tutorialVisible=false;
 let activeTutorialVideo=null;
 function syncTutorialVideo(){
@@ -160,8 +186,9 @@ function syncTutorialVideo(){
     activeTutorialVideo.pause();activeTutorialVideo=null;
   }
   if(!video||!tutorialVisible||document.hidden||activeTutorialVideo===video)return;
-  if(!video.getAttribute('src'))video.src=video.dataset.src;
+  prepareTutorial(video);
   activeTutorialVideo=video;
+  prepareTutorial(tutorialVideos[tutorialVideos.indexOf(video)+1]);
   video.play().catch(()=>{ /* Native controls remain available if autoplay is blocked. */ });
 }
 const tutorialObserver=new IntersectionObserver(entries=>{
@@ -171,30 +198,43 @@ tutorialObserver.observe(tutorialSection);
 document.addEventListener('visibilitychange',syncTutorialVideo);
 
 document.querySelectorAll('.tutorial-player').forEach(player=>{
-  const video=player.querySelector('video');
-  const button=player.querySelector('.tutorial-play');
-  const seek=player.querySelector('.tutorial-seek');
-  const update=()=>{
+  const video=player.querySelector('video'),button=player.querySelector('.tutorial-play'),seek=player.querySelector('.tutorial-seek');
+  let progressFrame=0,scrubbing=false,resumeAfterSeek=false,seekFrame=0;
+  seek.step='any';
+  function paintProgress(){
+    if(!scrubbing&&Number.isFinite(video.duration)&&video.duration>0)seek.value=String(video.currentTime/video.duration*1000);
+  }
+  function animateProgress(){
+    progressFrame=0;paintProgress();
+    if(!video.paused&&!video.ended)progressFrame=requestAnimationFrame(animateProgress);
+  }
+  function update(){
     button.textContent=video.paused?'▶':'Ⅱ';
     button.setAttribute('aria-label',video.paused?'Play tutorial':'Pause tutorial');
-  };
-  button.addEventListener('click',()=>{
-    if(video.paused)video.play().catch(()=>{});else video.pause();
-  });
-  video.addEventListener('play',update);
-  video.addEventListener('pause',update);
-  video.addEventListener('ended',update);
-  video.addEventListener('timeupdate',()=>{
-    if(Number.isFinite(video.duration)&&video.duration>0){
-      seek.value=String(Math.round(video.currentTime/video.duration*1000));
-      seek.setAttribute('aria-valuetext',Math.round(video.currentTime)+' seconds of '+Math.round(video.duration));
-    }
-  });
-  seek.addEventListener('input',()=>{
+    cancelAnimationFrame(progressFrame);progressFrame=0;paintProgress();
+    if(!video.paused)progressFrame=requestAnimationFrame(animateProgress);
+  }
+  function commitSeek(){
+    seekFrame=0;
     if(Number.isFinite(video.duration))video.currentTime=Number(seek.value)/1000*video.duration;
+  }
+  button.addEventListener('click',()=>{if(video.paused)video.play().catch(()=>{});else video.pause();});
+  ['play','pause','ended'].forEach(event=>video.addEventListener(event,update));
+  ['loadedmetadata','seeked','timeupdate'].forEach(event=>video.addEventListener(event,paintProgress));
+  seek.addEventListener('pointerdown',()=>{
+    scrubbing=true;resumeAfterSeek=!video.paused;video.pause();
   });
+  function finishSeek(){
+    if(!scrubbing)return;
+    commitSeek();scrubbing=false;
+    if(resumeAfterSeek)video.play().catch(()=>{});
+    resumeAfterSeek=false;
+  }
+  seek.addEventListener('input',()=>{if(!seekFrame)seekFrame=requestAnimationFrame(commitSeek);});
+  seek.addEventListener('change',finishSeek);
+  seek.addEventListener('pointerup',finishSeek);
+  seek.addEventListener('pointercancel',finishSeek);
 });
-
 const scanStack=document.querySelector('.scan-stack');
 if(scanStack){
   const sheets=[...scanStack.querySelectorAll('.scan-pile img')];
