@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# ChatGPT search discovery
+User-agent: OAI-SearchBot
+Allow: /
+
+Sitemap: https://obo-onebyone.com/sitemap.xml
