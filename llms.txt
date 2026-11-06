@@ -14,7 +14,7 @@ ONE BY ONE imports a video or image sequence, arranges frames on printable PDF s
 ## Official pages
 
 - [ONE BY ONE](https://obo-onebyone.com/): Official product website.
-- [Workflow](https://obo-onebyone.com/#how-it-works): Import, print, create and reanimate.
+- [Workflow and FAQ](https://obo-onebyone.com/#questions): Import, print, create and reanimate; materials, scanning and system requirements.
 - [Tutorials](https://obo-onebyone.com/#tutorial): New Project, Import, Frames, Sheets, Create, Scans, Review and Export.
 - [Questions](https://obo-onebyone.com/#questions): Product overview, workflow, price and supported systems.
 - [Downloads](https://obo-onebyone.com/#download): Current download options and system requirements. Consult this page for the latest release information.
