@@ -274,3 +274,19 @@ if(scanStack){
   new MutationObserver(syncStack).observe(scanStack.closest('.tutorial-item'),{attributes:true,attributeFilter:['class']});
   document.addEventListener('visibilitychange',syncStack);
 }
+
+// Keep in-page navigation scrollable without changing the shareable URL.
+document.addEventListener('click', event => {
+  if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  const link = event.target.closest('a[href^="#"]');
+  if (!link || link.hasAttribute('download') || (link.target && link.target !== '_self')) return;
+  const hash = link.getAttribute('href');
+  if (!hash || hash === '#') return;
+  let id;
+  try { id = decodeURIComponent(hash.slice(1)); } catch { return; }
+  const section = document.getElementById(id);
+  if (!section) return;
+  event.preventDefault();
+  if (location.hash) history.replaceState(history.state, '', location.pathname + location.search);
+  section.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start' });
+});
