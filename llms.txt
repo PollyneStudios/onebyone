@@ -1,0 +1,23 @@
+# ONE BY ONE (OBO)
+
+> Free desktop software by Pollyne Studios for mixed-media animation on paper.
+
+ONE BY ONE imports a video or image sequence, arranges frames on printable PDF sheets, and helps users reanimate hand-decorated frames after scanning. It supports drawing, painting and collage on paper.
+
+## Product facts
+
+- Free to download and use; no subscription or account required.
+- Runs on Apple Silicon Macs with macOS 13 or later, and 64-bit Windows 10 or Windows 11.
+- Project files stay on the user's device.
+- OBO is desktop software; the website is its product, tutorial and download page.
+
+## Official pages
+
+- [ONE BY ONE](https://obo-onebyone.com/): Official product website.
+- [Workflow](https://obo-onebyone.com/#how-it-works): Import, print, create and reanimate.
+- [Tutorials](https://obo-onebyone.com/#tutorial): New Project, Import, Frames, Sheets, Create, Scans, Review and Export.
+- [Questions](https://obo-onebyone.com/#questions): Product overview, workflow, price and supported systems.
+- [Downloads](https://obo-onebyone.com/#download): Current download options and system requirements. Consult this page for the latest release information.
+- [OBO Instagram](https://www.instagram.com/obo.onebyone/): Official OBO profile.
+- [Pollyne Studios](https://www.instagram.com/pollyne.studios/): The studio behind OBO.
+- [Support development](https://ko-fi.com/pollynestudios): Voluntary contributions.
