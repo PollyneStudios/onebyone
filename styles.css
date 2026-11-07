@@ -152,13 +152,13 @@ footer{height:auto;margin-top:80px}.footer-main{height:auto;padding:40px 24px;di
 .footer-instagram{display:inline-flex;align-items:center;gap:10px}.footer-instagram span{display:inline-flex;line-height:0;transform:translate(-4px,0);transition:transform .2s}.footer-instagram svg{width:.9em;height:.9em;stroke:currentColor;stroke-width:1.4;fill:none}.footer-instagram:hover{color:var(--yellow);opacity:1}.footer-instagram:hover span{transform:translate(-2px,-2px)}
 
 
-/* Mobile navigation, portrait showcase and concise download information. */
+/* Mobile navigation, square showcase and concise download information. */
 @media(max-width:1100px){
   *{-webkit-tap-highlight-color:transparent}
   .menu-toggle,.header nav,.header nav.is-open{display:none!important}
   .studio{right:24px}
-  .carousel{--portrait-width:min(72vw,360px);height:calc(var(--portrait-width)*16/9 + 40px)}
-  .showcase-card{width:var(--portrait-width);flex-basis:var(--portrait-width);height:auto;aspect-ratio:9/16}
+  .carousel{--mobile-card-width:min(72vw,360px);height:calc(var(--portrait-width)*16/9 + 40px)}
+  .showcase-card{width:var(--portrait-width);flex-basis:var(--portrait-width);height:auto;aspect-ratio:1/1}
   .showcase-card video{object-fit:cover}
   .download{display:flex;flex-direction:column;align-items:stretch}
   .mobile-download-note{display:flex;flex-direction:column;gap:10px;margin:24px auto 0;max-width:480px;color:var(--text);font-size:18px;line-height:1.45}
