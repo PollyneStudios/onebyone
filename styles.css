@@ -212,3 +212,79 @@ footer{height:auto;margin-top:80px}.footer-main{height:auto;padding:40px 24px;di
   .support-copy p{font-size:16px}
   .obo-faq-grid article{padding:22px}
 }
+
+
+/* Larger mobile reading scale, with space for the original branding. */
+@media(max-width:1100px){
+  .header{height:104px}
+  .brand{left:24px;top:31px}
+  .brand img{width:156px;height:39px}
+  .studio{right:24px;top:26px;font-size:12px;line-height:1.3;gap:10px}
+  .studio img{width:48px;height:48px}
+  section,article[id]{scroll-margin-top:128px}
+  .hero{padding-top:188px;padding-bottom:96px;gap:30px}
+  .hero h1{font-size:clamp(44px,12.5vw,112px);line-height:1.08}
+  .hero h2{font-size:38px;line-height:1.25;max-width:680px}
+  .hero p{font-size:27px;line-height:1.5}
+  .hero .mobile-desktop-note{font-size:19px;line-height:1.5;max-width:440px}
+  .sections{gap:96px}
+  .sections>section>h2{font-size:48px;line-height:1.15}
+  .showcase-more a{font-size:22px;min-height:56px}
+  .showcase-more span{font-size:28px}
+  .showcase-more{margin-top:16px}
+  .support{padding:40px 28px;gap:28px}
+  .sections>.support>h2{font-size:40px;line-height:1.2}
+  .support-copy p{font-size:23px;line-height:1.55}
+  .support-copy .button-dark{font-size:22px;line-height:1.4;min-height:60px;padding:14px 22px}
+  .tutorial-tab,.tutorial-item.is-open .tutorial-tab{padding:24px;min-height:84px}
+  .tutorial-tab span,.tutorial-item.is-open .tutorial-tab span{font-size:28px;line-height:1.25}
+  .tutorial-tab::after{font-size:32px}
+  .tutorial-content{padding:0 22px 28px}
+  .tutorial-content p{font-size:23px;line-height:1.6}
+  .tutorial-controls{gap:14px;padding:12px}
+  .tutorial-play{min-width:44px;min-height:44px;font-size:22px}
+  .mobile-download-note{gap:18px;margin-top:26px}
+  .mobile-download-note strong{font-size:29px;line-height:1.25}
+  .mobile-download-note span{font-size:23px;line-height:1.55}
+  .benefits{padding:22px 16px;gap:12px 0}
+  .benefits h3,.benefits article:hover h3{font-size:18px;line-height:1.5}
+  .benefits article+article::before{font-size:16px;margin:0 10px}
+  .obo-faq-grid{margin-top:32px;gap:22px}
+  .obo-faq-grid article{padding:28px}
+  .obo-faq-grid h3{font-size:29px;line-height:1.3;margin-bottom:20px}
+  .obo-faq-grid p{font-size:23px;line-height:1.6}
+  .faq-toggle{font-size:22px;min-height:58px;padding:14px 20px}
+  .footer-brand{font-size:42px}
+  .footer-explore,.footer-contact{font-size:23px;line-height:1.5;gap:22px}
+  .footer-main h2{font-size:17px;line-height:1.4}
+  .footer-bottom>p:first-child,.legal,.footer-bottom>a{font-size:16px;line-height:1.5}
+  .footer-instagram svg{width:1em;height:1em}
+  .footer-main{column-gap:26px;row-gap:40px}
+}
+@media(max-width:600px){
+  .header{height:96px}
+  .brand{left:20px;top:30px}
+  .brand img{width:144px;height:36px}
+  .studio{right:20px;top:27px;font-size:10px;gap:8px;max-width:150px;white-space:normal}
+  .studio img{width:42px;height:42px;flex-shrink:0}
+  .hero{padding:172px 20px 88px;gap:28px}
+  .hero h1{font-size:12.5vw}
+  .hero h2{font-size:34px;max-width:100%}
+  .hero p{font-size:25px;max-width:100%}
+  .hero .mobile-desktop-note{font-size:18px;max-width:100%}
+  .sections>section>h2{font-size:44px;line-height:1.18}
+  .sections>.support>h2{font-size:36px}
+  .support{padding:34px 24px}
+  .support-copy p{font-size:22px}
+  .tutorial-tab,.tutorial-item.is-open .tutorial-tab{padding:22px 20px}
+  .obo-faq-grid article{padding:25px}
+}
+@media(max-width:380px){
+  .brand{left:16px;top:32px}
+  .brand img{width:128px;height:32px}
+  .studio{right:16px;max-width:132px;font-size:10px;gap:7px}
+  .studio img{width:40px;height:40px}
+  .sections>section>h2{font-size:40px}
+  .footer-main{column-gap:18px;padding-left:20px;padding-right:20px}
+  .footer-explore,.footer-contact{font-size:20px}
+}
