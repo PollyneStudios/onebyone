@@ -291,3 +291,45 @@ footer{height:auto;margin-top:80px}.footer-main{height:auto;padding:40px 24px;di
 
 @media(max-width:600px){.studio{font-size:14px;line-height:1.25}}
 @media(max-width:380px){.studio{font-size:12px;line-height:1.25}}
+
+
+/* Roomier mobile media and a more balanced hero. */
+@media(max-width:1100px){
+  .carousel{--mobile-card-width:min(92vw,760px)}
+  .tutorial-content p,.obo-faq-grid p{font-size:25px;line-height:1.55}
+  .obo-faq-grid h3{font-size:32px;line-height:1.25}
+  .tutorial-tab span,.tutorial-item.is-open .tutorial-tab span{font-size:31px}
+  .support-copy p{font-size:25px;line-height:1.5}
+  .mobile-download-note strong{font-size:32px}
+  .mobile-download-note span{font-size:25px;line-height:1.5}
+  .benefits h3,.benefits article:hover h3{font-size:20px}
+  .showcase-more a{font-size:24px}
+  .faq-toggle{font-size:24px}
+  .tutorial-content{padding-left:0;padding-right:0}
+  .tutorial-player,.scan-stack{border-radius:0}
+  .tutorial-content p{padding:0 22px}
+}
+@media(max-width:600px){
+  .hero{min-height:0;padding:154px 20px 60px;gap:22px}
+  .hero h1{font-size:14.2vw;line-height:1.05;letter-spacing:-.045em}
+  .hero h2{font-size:32px;line-height:1.2;max-width:380px;font-weight:700}
+  .hero p{font-size:27px;line-height:1.4;max-width:380px}
+  .hero .mobile-desktop-note{font-size:19px;line-height:1.45;max-width:310px;margin-top:8px}
+  .sections{gap:88px}
+  .sections>section>h2{font-size:48px;line-height:1.12}
+  .sections>.support>h2{font-size:40px;line-height:1.15}
+  .support{padding:34px 22px}
+  .support-copy p{font-size:24px}
+  .tutorial-tab,.tutorial-item.is-open .tutorial-tab{padding:24px 18px;min-height:88px}
+  .obo-faq-grid article{padding:24px}
+  .footer-explore,.footer-contact{font-size:25px}
+}
+@media(max-width:380px){
+  .hero{padding-top:148px}
+  .hero h2{font-size:30px}
+  .hero p{font-size:25px}
+  .sections>section>h2{font-size:44px}
+  .tutorial-tab span,.tutorial-item.is-open .tutorial-tab span{font-size:28px}
+  .footer-main{grid-template-columns:1fr}
+  .footer-explore,.footer-contact{font-size:24px}
+}
