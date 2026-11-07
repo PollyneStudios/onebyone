@@ -385,3 +385,6 @@ footer{height:auto}
   .hero{padding-top:180px}
   .footer-explore,.footer-contact{font-size:22px}
 }
+
+.benefits{width:fit-content;max-width:100%;margin-left:auto;margin-right:auto}
+@media(min-width:1101px){.benefits{display:flex;justify-content:center}.benefits article{height:auto;min-height:101px;padding:20px 28px}}
