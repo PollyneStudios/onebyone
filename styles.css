@@ -288,3 +288,6 @@ footer{height:auto;margin-top:80px}.footer-main{height:auto;padding:40px 24px;di
   .footer-main{column-gap:18px;padding-left:20px;padding-right:20px}
   .footer-explore,.footer-contact{font-size:20px}
 }
+
+@media(max-width:600px){.studio{font-size:14px;line-height:1.25}}
+@media(max-width:380px){.studio{font-size:12px;line-height:1.25}}
