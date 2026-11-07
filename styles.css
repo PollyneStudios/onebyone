@@ -380,3 +380,6 @@ footer{height:auto}
 
 .benefits{width:fit-content;max-width:100%;margin-left:auto;margin-right:auto}
 @media(min-width:1101px){.benefits{display:flex;justify-content:center}.benefits article{height:auto;min-height:101px;padding:20px 28px}}
+
+.studio:hover img,.studio:active img,.studio:focus-visible img{filter:none}
+@media(min-width:1101px){.tutorial-content p .mobile-copy-break{display:none}}
