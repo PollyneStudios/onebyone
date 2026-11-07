@@ -155,13 +155,7 @@ function alignHero(){
 }
 document.fonts.ready.then(alignHero);
 
-const menuToggle=document.querySelector('.menu-toggle');
-const mainMenu=document.querySelector('#main-menu');
-function closeMenu(){menuToggle.setAttribute('aria-expanded','false');mainMenu.classList.remove('is-open');}
-menuToggle.addEventListener('click',()=>{const open=menuToggle.getAttribute('aria-expanded')!=='true';menuToggle.setAttribute('aria-expanded',String(open));mainMenu.classList.toggle('is-open',open);});
-mainMenu.addEventListener('click',event=>{if(event.target.closest('a'))closeMenu();});
-document.addEventListener('keydown',event=>{if(event.key==='Escape')closeMenu();});
-window.addEventListener('resize',()=>{closeMenu();alignHero();});
+window.addEventListener('resize', alignHero);
 document.addEventListener('click',event=>{if(matchMedia('(max-width: 1100px)').matches&&event.target.closest('[data-download]'))event.preventDefault();},true);
 
 // Tutorial players only load when opened, and pause outside the section.
@@ -289,4 +283,19 @@ document.addEventListener('click', event => {
   event.preventDefault();
   if (location.hash) history.replaceState(history.state, '', location.pathname + location.search);
   section.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start' });
+});
+
+
+// Keep the mobile FAQ short while retaining every answer in the page.
+const faqSection=document.querySelector('.obo-faq');
+const faqToggle=faqSection.querySelector('.faq-toggle');
+const mobileLayout=matchMedia('(max-width:1100px)');
+faqSection.classList.add('faq-ready');
+function syncFaqToggle(){faqToggle.hidden=!mobileLayout.matches;}
+syncFaqToggle();
+mobileLayout.addEventListener('change',syncFaqToggle);
+faqToggle.addEventListener('click',()=>{
+  const expanded=faqSection.classList.toggle('is-expanded');
+  faqToggle.setAttribute('aria-expanded',String(expanded));
+  faqToggle.innerHTML=expanded?'Show fewer questions <span aria-hidden="true">−</span>':'See all questions <span aria-hidden="true">+</span>';
 });
