@@ -1,7 +1,8 @@
 const lessons = [...document.querySelectorAll('.tutorial-item')];
 lessons.forEach(item => item.querySelector('button').addEventListener('click', () => {
+  const collapse = matchMedia('(max-width:1100px)').matches && item.classList.contains('is-open');
   lessons.forEach(lesson => {
-    const open = lesson === item;
+    const open = lesson === item && !collapse;
     lesson.classList.toggle('is-open', open);
     lesson.querySelector('button').setAttribute('aria-expanded', String(open));
     lesson.querySelector('.tutorial-content').inert = !open;
