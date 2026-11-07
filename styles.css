@@ -333,3 +333,55 @@ footer{height:auto;margin-top:80px}.footer-main{height:auto;padding:40px 24px;di
   .footer-main{grid-template-columns:1fr}
   .footer-explore,.footer-contact{font-size:24px}
 }
+
+
+/* Deliberate line breaks, content-sized benefits and aligned footer columns. */
+.support-copy p>span{display:block;text-wrap:pretty}
+.support-copy p>span:nth-child(3){margin-top:12px}
+.tutorial-content p{text-wrap:pretty}
+.footer-main{height:auto;min-height:346px;display:grid;grid-template-columns:minmax(0,1fr) 230px 230px;gap:56px;padding:54px;align-items:start}
+.footer-brand,.footer-explore,.footer-contact{position:static}
+.footer-explore,.footer-contact{align-items:flex-start;text-align:left;gap:18px}
+.footer-main h2{margin:0 0 8px}
+footer{height:auto}
+@media(min-width:1101px){
+  .brand img{width:192px;height:48px}
+  .brand{top:26px}
+  .header{height:112px}
+  .header nav{font-size:24px;line-height:30px;gap:32px;top:41px}
+  .studio{left:auto;right:56px;top:27px;font-size:18px;line-height:22px;gap:6px}
+  .studio img{width:57px;height:57px}
+}
+@media(max-width:1100px){
+  .header{height:144px}
+  .brand{top:42px}
+  .brand img{width:234px;height:58.5px}
+  .studio{top:15px;right:24px;max-width:132px;flex-direction:column-reverse;gap:5px;text-align:center;font-size:17px;line-height:1.1}
+  .studio img{width:72px;height:72px}
+  .hero{padding-top:196px}
+  .hero h1{font-size:15.5vw;line-height:1.05}
+  .hero .mobile-desktop-note{max-width:none}
+  .benefits{align-self:center;width:fit-content;max-width:100%}
+  .footer-main{min-height:0;padding:40px 24px;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px 28px}
+  .footer-brand{grid-column:1/-1}
+  .footer-explore,.footer-contact{gap:20px;align-items:flex-start;text-align:left}
+  section,article[id]{scroll-margin-top:164px}
+}
+@media(max-width:600px){
+  .header{height:136px}
+  .brand{top:41px}
+  .brand img{width:216px;height:54px}
+  .studio{top:14px;right:20px;max-width:94px;font-size:14px;line-height:1.1}
+  .studio img{width:63px;height:63px}
+  .hero{padding-top:185px}
+  .hero h1{font-size:15.5vw}
+  .footer-main{padding:36px 20px;gap:36px 20px}
+}
+@media(max-width:380px){
+  .brand{left:16px;top:44px}
+  .brand img{width:192px;height:48px}
+  .studio{right:16px;max-width:80px;font-size:12px}
+  .studio img{width:60px;height:60px}
+  .hero{padding-top:180px}
+  .footer-explore,.footer-contact{font-size:22px}
+}
