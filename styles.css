@@ -150,3 +150,28 @@ footer{height:auto;margin-top:80px}.footer-main{height:auto;padding:40px 24px;di
 .support{background:var(--yellow)}
 
 .footer-instagram{display:inline-flex;align-items:center;gap:10px}.footer-instagram span{display:inline-flex;line-height:0;transform:translate(-4px,0);transition:transform .2s}.footer-instagram svg{width:.9em;height:.9em;stroke:currentColor;stroke-width:1.4;fill:none}.footer-instagram:hover{color:var(--yellow);opacity:1}.footer-instagram:hover span{transform:translate(-2px,-2px)}
+
+
+/* Mobile navigation, portrait showcase and concise download information. */
+@media(max-width:1100px){
+  *{-webkit-tap-highlight-color:transparent}
+  .menu-toggle,.header nav,.header nav.is-open{display:none!important}
+  .studio{right:24px}
+  .carousel{--portrait-width:min(72vw,360px);height:calc(var(--portrait-width)*16/9 + 40px)}
+  .showcase-card{width:var(--portrait-width);flex-basis:var(--portrait-width);height:auto;aspect-ratio:9/16}
+  .showcase-card video{object-fit:cover}
+  .download{display:flex;flex-direction:column;align-items:stretch}
+  .mobile-download-note{display:flex;flex-direction:column;gap:10px;margin:24px auto 0;max-width:480px;color:var(--text);font-size:18px;line-height:1.45}
+  .mobile-download-note strong{font-size:22px;font-weight:500}
+  .mobile-download-note span{color:var(--muted);font-size:16px}
+  .benefits{display:flex;justify-content:center;align-items:center;gap:0;background:var(--card);border-radius:12px;padding:18px 12px;margin-top:26px}
+  .benefits article{display:flex;align-items:center;gap:0;background:none;border-radius:0;padding:0;min-height:0;height:auto}
+  .benefits article+article::before{content:'•';color:var(--muted);margin:0 clamp(6px,1.5vw,18px);font-size:12px}
+  .benefits h3{font-size:clamp(10.5px,2.7vw,16px);font-weight:700;line-height:1.4;white-space:nowrap;color:var(--muted)}
+  .benefits p{display:none}
+  .obo-faq.faq-ready:not(.is-expanded) .obo-faq-grid>article:nth-child(n+3){display:none}
+  .faq-toggle{align-self:center;margin:24px auto 0;padding:12px 18px;border:1px solid #ffffff38;border-radius:7px;background:transparent;color:var(--text);font:500 16px/1.4 'Space Grotesk',sans-serif;cursor:pointer}
+  .faq-toggle:not([hidden]){display:flex;align-items:center;gap:12px}
+  .faq-toggle[hidden]{display:none}
+}
+@media(max-width:600px){.studio{right:20px}}
