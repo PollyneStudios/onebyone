@@ -412,3 +412,32 @@ footer{height:auto}
  .hero-split .hero-summary{font-size:24px;line-height:1.5;margin:28px 0 20px}
  .hero-split .mobile-desktop-note{font-size:18px;margin:20px 0 0}
 }
+
+
+/* Desktop: the cover begins directly below the fixed menu. */
+@media(min-width:1101px){
+ .hero.hero-split{padding-top:96px;padding-bottom:52px;min-height:0;align-items:start}
+ .hero-split .hero-copy{padding-top:68px}
+ .hero-cover{align-self:start}
+ .hero-split .hero-summary{max-width:none;font-size:21px;line-height:1.55;margin-top:34px}
+ .hero-summary>span{display:block;white-space:nowrap}
+}
+/* Mobile: headline, visual identity and explanation form one clear sequence. */
+@media(max-width:1100px){
+ .hero.hero-split{display:flex;flex-direction:column;align-items:center;gap:0;padding:178px 24px 58px;text-align:center;overflow:hidden}
+ .hero-split .hero-copy{display:contents}
+ .hero-split h1{order:1;position:relative;z-index:1;width:100%;max-width:640px;text-align:center;font-size:clamp(42px,8.4vw,72px);line-height:1.06;letter-spacing:-.045em}
+ .hero-split .hero-cover{order:2;flex:none;width:calc(100% + 48px);max-width:620px;margin:-18px -24px -22px}
+ .hero-cover-video{width:100%;height:auto}
+ .hero-split .hero-summary{order:3;width:100%;max-width:580px;font-size:25px;line-height:1.5;margin:0;text-align:center;text-wrap:pretty}
+ .hero-summary>span{display:inline;white-space:normal}
+ .hero-split .mobile-desktop-note{order:4;width:100%;max-width:580px;text-align:center;font-size:18px;line-height:1.4;color:var(--muted);margin:28px 0 0}
+ .hero-split .hero-actions{display:none!important}
+}
+@media(max-width:600px){
+ .hero.hero-split{padding:170px 24px 54px}
+ .hero-split h1{font-size:clamp(39px,10vw,58px);line-height:1.08}
+ .hero-split .hero-cover{margin-top:-16px;margin-bottom:-20px}
+ .hero-split .hero-summary{font-size:24px;line-height:1.5}
+ .hero-split .mobile-desktop-note{font-size:17px;max-width:280px;margin-top:24px}
+}
