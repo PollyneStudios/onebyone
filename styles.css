@@ -417,7 +417,7 @@ footer{height:auto}
 /* Desktop: the cover begins directly below the fixed menu. */
 @media(min-width:1101px){
  .hero.hero-split{padding-top:96px;padding-bottom:52px;min-height:0;align-items:start}
- .hero-split .hero-copy{padding-top:68px}
+ .hero-split .hero-copy{padding-top:0;align-self:center}
  .hero-cover{align-self:start}
  .hero-split .hero-summary{max-width:none;font-size:21px;line-height:1.55;margin-top:34px}
  .hero-summary>span{display:block;white-space:nowrap}
