@@ -141,22 +141,7 @@ carousel.addEventListener('pointermove',event=>{
 function endDrag(){if(!dragging)return;dragging=false;carousel.classList.remove('is-dragging');target=dragDistance<6&&pressedCard?(cards.indexOf(pressedCard)-originals.length)*stride():position;pressedCard=null;snapToCard();}
 carousel.addEventListener('pointerup',endDrag);carousel.addEventListener('pointercancel',endDrag);
 window.addEventListener('resize',render);render();
-// Center the visible glyphs, including the title's negative letter spacing.
-function alignHero(){
-  const canvas=document.createElement('canvas'),context=canvas.getContext('2d');
-  document.querySelectorAll('.hero h1,.hero h2,.hero p').forEach(element=>{
-    const style=getComputedStyle(element);
-    context.font=`${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
-    if('letterSpacing' in context)context.letterSpacing=style.letterSpacing==='normal'?'0px':style.letterSpacing;
-    const text=style.textTransform==='uppercase'?element.textContent.toUpperCase():element.textContent;
-    const metric=context.measureText(text);
-    const correction=(metric.width-metric.actualBoundingBoxRight+metric.actualBoundingBoxLeft)/2;
-    element.style.setProperty('--ink-shift',`${correction}px`);
-  });
-}
-document.fonts.ready.then(alignHero);
-
-window.addEventListener('resize', alignHero);
+// The split hero uses normal text flow rather than glyph-position corrections.
 document.addEventListener('click',event=>{if(matchMedia('(max-width: 1100px)').matches&&event.target.closest('[data-download]'))event.preventDefault();},true);
 
 // Tutorial players only load when opened, and pause outside the section.
@@ -300,3 +285,26 @@ faqToggle.addEventListener('click',()=>{
   faqToggle.setAttribute('aria-expanded',String(expanded));
   faqToggle.innerHTML=expanded?'Show fewer questions <span aria-hidden="true">−</span>':'See all questions <span aria-hidden="true">+</span>';
 });
+
+
+// Pause the cover off screen and respect reduced motion.
+const heroCover=document.querySelector('.hero-cover-video');
+const heroCoverToggle=document.querySelector('.hero-cover-toggle');
+if(heroCover&&heroCoverToggle){
+ let heroOnScreen=true;
+ let heroPausedByUser=matchMedia('(prefers-reduced-motion:reduce)').matches;
+ function updateHeroCover(){
+  heroCoverToggle.textContent=heroCover.paused?'Play animation':'Pause animation';
+  heroCoverToggle.setAttribute('aria-label',heroCover.paused?'Play cover animation':'Pause cover animation');
+ }
+ function syncHeroCover(){
+  if(heroPausedByUser||!heroOnScreen||document.hidden){heroCover.pause();return;}
+  heroCover.play().catch(updateHeroCover);
+ }
+ heroCover.addEventListener('play',updateHeroCover);
+ heroCover.addEventListener('pause',updateHeroCover);
+ heroCoverToggle.addEventListener('click',()=>{heroPausedByUser=!heroCover.paused;syncHeroCover();});
+ new IntersectionObserver(entries=>{heroOnScreen=entries[0].isIntersecting;syncHeroCover();},{threshold:.05}).observe(heroCover);
+ document.addEventListener('visibilitychange',syncHeroCover);
+ updateHeroCover();
+}
