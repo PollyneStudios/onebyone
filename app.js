@@ -287,24 +287,16 @@ faqToggle.addEventListener('click',()=>{
 });
 
 
-// Pause the cover off screen and respect reduced motion.
+// Pause the decorative cover off screen and respect reduced motion.
 const heroCover=document.querySelector('.hero-cover-video');
-const heroCoverToggle=document.querySelector('.hero-cover-toggle');
-if(heroCover&&heroCoverToggle){
- let heroOnScreen=true;
- let heroPausedByUser=matchMedia('(prefers-reduced-motion:reduce)').matches;
- function updateHeroCover(){
-  heroCoverToggle.textContent=heroCover.paused?'Play animation':'Pause animation';
-  heroCoverToggle.setAttribute('aria-label',heroCover.paused?'Play cover animation':'Pause cover animation');
- }
+if(heroCover){
+ let heroOnScreen=false;
+ const heroMotion=matchMedia('(prefers-reduced-motion:reduce)');
  function syncHeroCover(){
-  if(heroPausedByUser||!heroOnScreen||document.hidden){heroCover.pause();return;}
-  heroCover.play().catch(updateHeroCover);
+  if(heroMotion.matches||!heroOnScreen||document.hidden){heroCover.pause();return;}
+  heroCover.play().catch(()=>{ /* The poster remains visible when playback is unavailable. */ });
  }
- heroCover.addEventListener('play',updateHeroCover);
- heroCover.addEventListener('pause',updateHeroCover);
- heroCoverToggle.addEventListener('click',()=>{heroPausedByUser=!heroCover.paused;syncHeroCover();});
  new IntersectionObserver(entries=>{heroOnScreen=entries[0].isIntersecting;syncHeroCover();},{threshold:.05}).observe(heroCover);
  document.addEventListener('visibilitychange',syncHeroCover);
- updateHeroCover();
+ heroMotion.addEventListener('change',syncHeroCover);
 }
