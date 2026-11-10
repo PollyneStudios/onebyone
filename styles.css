@@ -294,3 +294,13 @@ footer{height:auto}
  .sections>section>h2{font-size:29px}.sections>.support>h2{font-size:26px}
  .benefits{padding:12px}.benefits h3,.benefits article:hover h3{font-size:11px}.benefits article+article::before{margin:0 5px}
 }
+
+/* Desktop footer quarters and section rhythm. */
+@media(min-width:1101px){
+ .footer-main{grid-template-columns:2fr 1fr 1fr;column-gap:0;padding:54px 0}
+ .footer-brand{margin-left:54px}
+ .footer-explore,.footer-contact{align-items:flex-start;text-align:left}
+ .download .benefits{margin-top:37px}
+ .showcase-card{transform:scale(.86)}
+ .showcase-card.is-active{transform:scale(1)}
+}
