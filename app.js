@@ -97,8 +97,10 @@ function render(){
   track.style.transform=`translate3d(${-loop-position-originals[0].offsetWidth/2}px,0,0)`;
   const active=originals.length+Math.round(position/step);
   cards.forEach((card,i)=>card.classList.toggle('is-active',i===active));
-  prioritizeVideos(modulo(active-originals.length,originals.length));
-  syncVideo();
+  if(!dragging){
+    prioritizeVideos(modulo(active-originals.length,originals.length));
+    syncVideo();
+  }
 }
 function animate(){
   frame=0;
@@ -127,19 +129,60 @@ carousel.addEventListener('keydown',event=>{
   if(!['ArrowLeft','ArrowRight'].includes(event.key))return;
   event.preventDefault();target=Math.round(target/stride())*stride();move((event.key==='ArrowRight'?1:-1)*stride());
 });
+// Wait for a horizontal intent before taking the gesture from page scrolling.
+let gesture=null,dragFrame=0;
+function paintDrag(){
+  if(dragFrame)return;
+  dragFrame=requestAnimationFrame(()=>{dragFrame=0;render();});
+}
 carousel.addEventListener('pointerdown',event=>{
-  if(event.button!==0)return;
-  if(event.target.closest('button,a,iframe'))return;
-  clearTimeout(snapTimer);dragging=true;syncVideo();dragDistance=0;pressedCard=event.target.closest('.showcase-card');lastX=event.clientX;target=position;
-  carousel.setPointerCapture(event.pointerId);carousel.classList.add('is-dragging');
+  if(event.button!==0||event.isPrimary===false||event.target.closest('button,a,iframe'))return;
+  gesture={id:event.pointerId,x:event.clientX,y:event.clientY,lastX:event.clientX,time:event.timeStamp,velocity:0};
+  pressedCard=event.target.closest('.showcase-card');
+  dragDistance=0;
 });
 carousel.addEventListener('pointermove',event=>{
-  if(!dragging)return;
-  const delta=lastX-event.clientX;lastX=event.clientX;
-  dragDistance+=Math.abs(delta);position+=delta;target=position;render();
+  if(!gesture||gesture.id!==event.pointerId)return;
+  const dx=event.clientX-gesture.x,dy=event.clientY-gesture.y;
+  if(!dragging){
+    if(Math.max(Math.abs(dx),Math.abs(dy))<6)return;
+    if(Math.abs(dy)>Math.abs(dx)){gesture=null;pressedCard=null;return;}
+    clearTimeout(snapTimer);
+    if(frame){cancelAnimationFrame(frame);frame=0;}
+    dragging=true;target=position;syncVideo();
+    carousel.setPointerCapture(event.pointerId);
+    carousel.classList.add('is-dragging');
+  }
+  const delta=gesture.lastX-event.clientX;
+  const elapsed=Math.max(1,event.timeStamp-gesture.time);
+  gesture.velocity=.65*(delta/elapsed)+.35*gesture.velocity;
+  gesture.lastX=event.clientX;gesture.time=event.timeStamp;
+  dragDistance=Math.abs(dx);position+=delta;target=position;
+  paintDrag();
 });
-function endDrag(){if(!dragging)return;dragging=false;carousel.classList.remove('is-dragging');target=dragDistance<6&&pressedCard?(cards.indexOf(pressedCard)-originals.length)*stride():position;pressedCard=null;snapToCard();}
-carousel.addEventListener('pointerup',endDrag);carousel.addEventListener('pointercancel',endDrag);
+function endDrag(event){
+  if(!gesture||event.pointerId!==gesture.id)return;
+  const current=gesture;gesture=null;
+  if(dragFrame){cancelAnimationFrame(dragFrame);dragFrame=0;}
+  if(!dragging){
+    if(event.type==='pointerup'&&pressedCard){
+      target=(cards.indexOf(pressedCard)-originals.length)*stride();
+      snapToCard();
+    }
+    pressedCard=null;return;
+  }
+  dragging=false;carousel.classList.remove('is-dragging');
+  const speed=event.timeStamp-current.time<100?current.velocity:0;
+  const step=stride();
+  const projected=position+Math.max(-step*.65,Math.min(step*.65,speed*180));
+  target=event.type==='pointercancel'?position:projected;
+  pressedCard=null;snapToCard();
+}
+carousel.addEventListener('pointerup',endDrag);
+carousel.addEventListener('pointercancel',endDrag);
+carousel.addEventListener('lostpointercapture',event=>{
+  if(gesture)endDrag(event);
+});
 window.addEventListener('resize',render);render();
 // The split hero uses normal text flow rather than glyph-position corrections.
 document.addEventListener('click',event=>{if(matchMedia('(max-width: 1100px)').matches&&event.target.closest('[data-download]'))event.preventDefault();},true);
