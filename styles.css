@@ -304,3 +304,5 @@ footer{height:auto}
  .showcase-card{transform:scale(.86)}
  .showcase-card.is-active{transform:scale(1)}
 }
+
+@media(min-width:1101px){.footer-explore,.footer-contact{margin-left:10px}}
