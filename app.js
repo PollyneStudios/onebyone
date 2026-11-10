@@ -135,31 +135,33 @@ function paintDrag(){
   if(dragFrame)return;
   dragFrame=requestAnimationFrame(()=>{dragFrame=0;render();});
 }
-carousel.addEventListener('pointerdown',event=>{
+function startGalleryGesture(event){
   if(event.button!==0||event.isPrimary===false||event.target.closest('button,a,iframe'))return;
   gesture={id:event.pointerId,x:event.clientX,y:event.clientY,lastX:event.clientX,time:event.timeStamp,velocity:0};
   pressedCard=event.target.closest('.showcase-card');
   dragDistance=0;
-});
-carousel.addEventListener('pointermove',event=>{
+}
+function moveGalleryGesture(event){
   if(!gesture||gesture.id!==event.pointerId)return;
   const dx=event.clientX-gesture.x,dy=event.clientY-gesture.y;
   if(!dragging){
     if(Math.max(Math.abs(dx),Math.abs(dy))<6)return;
-    if(Math.abs(dy)>Math.abs(dx)){gesture=null;pressedCard=null;return;}
+    if(Math.abs(dy)>Math.abs(dx)*1.4){gesture=null;pressedCard=null;return;}
+    if(Math.abs(dx)<Math.abs(dy))return;
     clearTimeout(snapTimer);
     if(frame){cancelAnimationFrame(frame);frame=0;}
     dragging=true;target=position;syncVideo();
-    carousel.setPointerCapture(event.pointerId);
+    if(event.pointerType!=='touch')carousel.setPointerCapture(event.pointerId);
     carousel.classList.add('is-dragging');
   }
+  if(event.cancelable)event.preventDefault();
   const delta=gesture.lastX-event.clientX;
   const elapsed=Math.max(1,event.timeStamp-gesture.time);
   gesture.velocity=.65*(delta/elapsed)+.35*gesture.velocity;
   gesture.lastX=event.clientX;gesture.time=event.timeStamp;
   dragDistance=Math.abs(dx);position+=delta;target=position;
   paintDrag();
-});
+}
 function endDrag(event){
   if(!gesture||event.pointerId!==gesture.id)return;
   const current=gesture;gesture=null;
@@ -176,10 +178,41 @@ function endDrag(event){
   const step=stride();
   const projected=position+Math.max(-step*.65,Math.min(step*.65,speed*180));
   target=event.type==='pointercancel'?position:projected;
+  // A deliberate short swipe should advance rather than spring back.
+  if(event.type!=='pointercancel'&&dragDistance>24){
+    const direction=Math.sign(current.x-event.clientX);
+    const nearest=Math.round(position/step);
+    if(Math.round(target/step)===nearest&&Math.abs(position-nearest*step)<step*.45){
+      target=(direction>0?Math.ceil(position/step):Math.floor(position/step))*step;
+    }
+  }
   pressedCard=null;snapToCard();
 }
-carousel.addEventListener('pointerup',endDrag);
-carousel.addEventListener('pointercancel',endDrag);
+carousel.addEventListener('pointerdown',event=>{if(event.pointerType!=='touch')startGalleryGesture(event);});
+carousel.addEventListener('pointermove',event=>{if(event.pointerType!=='touch')moveGalleryGesture(event);});
+carousel.addEventListener('pointerup',event=>{if(event.pointerType!=='touch')endDrag(event);});
+carousel.addEventListener('pointercancel',event=>{if(event.pointerType!=='touch')endDrag(event);});
+// Touch events let the page scroll vertically while horizontal swipes remain direct.
+function galleryTouchEvent(event,touch){
+  return {pointerId:touch.identifier,pointerType:'touch',button:0,isPrimary:true,
+    clientX:touch.clientX,clientY:touch.clientY,timeStamp:event.timeStamp,target:event.target,
+    type:event.type==='touchcancel'?'pointercancel':'pointerup',cancelable:event.cancelable,
+    preventDefault:()=>event.preventDefault()};
+}
+carousel.addEventListener('touchstart',event=>{
+  if(event.touches.length!==1)return;
+  startGalleryGesture(galleryTouchEvent(event,event.touches[0]));
+},{passive:true});
+carousel.addEventListener('touchmove',event=>{
+  const touch=[...event.touches].find(t=>t.identifier===gesture?.id);
+  if(touch)moveGalleryGesture(galleryTouchEvent(event,touch));
+},{passive:false});
+function endGalleryTouch(event){
+  const touch=[...event.changedTouches].find(t=>t.identifier===gesture?.id);
+  if(touch)endDrag(galleryTouchEvent(event,touch));
+}
+carousel.addEventListener('touchend',endGalleryTouch);
+carousel.addEventListener('touchcancel',endGalleryTouch);
 carousel.addEventListener('lostpointercapture',event=>{
   if(gesture)endDrag(event);
 });
